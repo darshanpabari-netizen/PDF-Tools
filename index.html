@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PDF Tools — Split & Merge</title>
+    <link rel="stylesheet" href="assets/styles.css" />
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script defer src="assets/app.js"></script>
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero-content">
+        <p class="badge">Local-only PDF tools</p>
+        <h1>Split &amp; Merge PDFs</h1>
+        <p class="subtitle">
+          Simple, modern PDF utilities that run entirely in your browser.
+        </p>
+        <div class="disclaimer">
+          <strong>Privacy notice:</strong> Your files never leave this device.
+          All processing happens locally in your browser and no data is uploaded
+          anywhere.
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="panel">
+        <div class="tabs" role="tablist">
+          <button class="tab active" data-tab="merge" role="tab">Merge PDFs</button>
+          <button class="tab" data-tab="split" role="tab">Split PDFs</button>
+        </div>
+
+        <div class="tab-panels">
+          <section class="tab-panel active" id="merge-panel" role="tabpanel">
+            <div class="panel-grid">
+              <div>
+                <h2>Merge PDFs</h2>
+                <p class="muted">
+                  Drag &amp; drop multiple PDFs. Reorder them and merge into a single
+                  file.
+                </p>
+                <div class="dropzone" id="merge-dropzone">
+                  <div>
+                    <h3>Drop PDFs here</h3>
+                    <p>or click to browse</p>
+                  </div>
+                  <input id="merge-input" type="file" accept="application/pdf" multiple />
+                </div>
+
+                <div class="list-header">
+                  <h3>Files</h3>
+                  <span class="muted">Drag to reorder</span>
+                </div>
+                <ul class="file-list" id="merge-list"></ul>
+
+                <div class="field-row">
+                  <label for="merge-name">Output name</label>
+                  <input id="merge-name" type="text" value="merged.pdf" />
+                </div>
+
+                <div class="actions">
+                  <button class="secondary" id="merge-clear">Clear list</button>
+                  <button class="primary" id="merge-run" disabled>Merge &amp; Download</button>
+                </div>
+                <p class="status" id="merge-status"></p>
+              </div>
+              <div class="feature-card">
+                <h3>Highlights</h3>
+                <ul>
+                  <li>Drag &amp; drop upload</li>
+                  <li>Reorder files before merging</li>
+                  <li>Instant download with no uploads</li>
+                  <li>Works locally in any modern browser</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <section class="tab-panel" id="split-panel" role="tabpanel">
+            <div class="panel-grid">
+              <div>
+                <h2>Split PDFs</h2>
+                <p class="muted">
+                  Split by page ranges, every N pages, or into single-page PDFs.
+                </p>
+                <div class="dropzone" id="split-dropzone">
+                  <div>
+                    <h3>Drop a PDF here</h3>
+                    <p>or click to browse</p>
+                  </div>
+                  <input id="split-input" type="file" accept="application/pdf" />
+                </div>
+
+                <div class="split-meta">
+                  <div>
+                    <span class="label">File</span>
+                    <span id="split-filename" class="value">No file selected</span>
+                  </div>
+                  <div>
+                    <span class="label">Pages</span>
+                    <span id="split-pages" class="value">—</span>
+                  </div>
+                </div>
+
+                <div class="toggle-row">
+                  <label class="checkbox">
+                    <input id="split-single" type="checkbox" />
+                    Split every page into its own PDF
+                  </label>
+                </div>
+
+                <div class="range-controls">
+                  <div class="range-header">
+                    <h3>Split ranges</h3>
+                    <span class="muted">Drag to reorder</span>
+                  </div>
+                  <ul class="range-list" id="range-list"></ul>
+                  <div class="range-actions">
+                    <button class="secondary" id="range-add">Add range</button>
+                    <div class="range-generator">
+                      <label for="range-every">Split every</label>
+                      <input id="range-every" type="number" min="1" placeholder="e.g. 5" />
+                      <span>pages</span>
+                      <button class="secondary" id="range-generate">Generate</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="actions">
+                  <button class="primary" id="split-run" disabled>Split &amp; Download</button>
+                </div>
+                <p class="status" id="split-status"></p>
+              </div>
+
+              <div class="feature-card">
+                <h3>Tips</h3>
+                <ul>
+                  <li>Add multiple ranges for custom splits</li>
+                  <li>Generate ranges automatically with “every N pages”</li>
+                  <li>Drag ranges to control output order</li>
+                  <li>Downloads stay on this device only</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
