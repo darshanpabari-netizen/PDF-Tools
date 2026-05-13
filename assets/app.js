@@ -32,6 +32,17 @@ let currentDragId = null;
 
 const createId = () => `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
+const isPdfFile = (file) =>
+  file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+
+const stripPdfExtension = (fileName) => fileName.replace(/\.pdf$/i, '');
+
+const ensurePdfExtension = (fileName) =>
+  fileName.toLowerCase().endsWith('.pdf') ? fileName : `${fileName}.pdf`;
+
+const getPageIndices = (start, end) =>
+  Array.from({ length: end - start + 1 }, (_, idx) => start - 1 + idx);
+
 const setStatus = (element, message, type = '') => {
   element.textContent = message;
   element.className = `status ${type}`.trim();
@@ -76,10 +87,7 @@ const enableDropzone = (dropzone, onFiles) => {
   input.addEventListener('change', () => onFiles(input.files));
 };
 
-const filterPdfFiles = (fileList) =>
-  Array.from(fileList).filter((file) =>
-    file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')
-  );
+const filterPdfFiles = (fileList) => Array.from(fileList).filter(isPdfFile);
 
 const renderMergeList = () => {
   mergeList.innerHTML = '';
@@ -175,7 +183,7 @@ mergeRun.addEventListener('click', async () => {
     }
     const bytes = await merged.save();
     const outputName = mergeName.value.trim() || 'merged.pdf';
-    downloadBlob(bytes, outputName.endsWith('.pdf') ? outputName : `${outputName}.pdf`);
+    downloadBlob(bytes, ensurePdfExtension(outputName));
     setStatus(mergeStatus, 'Merge complete.', 'success');
   } catch (error) {
     setStatus(mergeStatus, error.message || 'Failed to merge PDFs.', 'error');
@@ -358,13 +366,10 @@ splitRun.addEventListener('click', async () => {
     let part = 1;
     for (const range of outputRanges) {
       const newDoc = await PDFDocument.create();
-      const pages = await newDoc.copyPages(
-        sourceDoc,
-        Array.from({ length: range.end - range.start + 1 }, (_, idx) => range.start - 1 + idx)
-      );
+      const pages = await newDoc.copyPages(sourceDoc, getPageIndices(range.start, range.end));
       pages.forEach((page) => newDoc.addPage(page));
       const bytes = await newDoc.save();
-      const baseName = splitFile.name.replace(/\.pdf$/i, '') || 'split';
+      const baseName = stripPdfExtension(splitFile.name) || 'split';
       downloadBlob(bytes, `${baseName}-part-${part}.pdf`);
       part += 1;
     }
